@@ -15,6 +15,13 @@ class SignInPage extends StatelessWidget {
       print(e.toString());
     }
   }
+  void _googleSignIn() async{
+    try {
+      await auth.signInWithGoogle();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,9 +97,6 @@ class SignInPage extends StatelessWidget {
   }
 }
 
-void _googleSignIn() {
-  //TODO: Implement google sign in here
-}
 
 void _facebookSignIn() {
   //TODO: Implement facebook sign in here
