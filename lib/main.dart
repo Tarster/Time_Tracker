@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:time_tracker_final/app/landing_page.dart';
+import 'package:time_tracker_final/services/auth.dart';
 
 main() async{
   // This is done to make sure that Firebase is initialized
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.teal,
         ),
-        home: LandingPage(),
+        home: LandingPage(auth: Auth(),),
         debugShowCheckedModeBanner: false,
     );
   }
