@@ -7,6 +7,8 @@ abstract class AuthBase {
   Future<User?> signInAnonymously();
   Future<void> signOut();
   Future<User?> signInWithGoogle();
+  Future<User?> signInWithEmailAndPassword(String email, String password);
+  Future<User?> createUserWithEmailAndPassword(String email, String password);
 }
 
 class Auth implements AuthBase {
@@ -18,15 +20,6 @@ class Auth implements AuthBase {
   //variable to store the current User
   @override
   User? get currentUser => _firebaseAuth.currentUser;
-
-  //Function to sign in Anonymously
-  @override
-  Future<User?> signInAnonymously() async {
-    //Function call to return the user credential
-    final userCredential = await _firebaseAuth.signInAnonymously();
-    //Return the user variable
-    return userCredential.user;
-  }
 
   @override
   Future<User?> signInWithGoogle() async {
@@ -43,14 +36,13 @@ class Auth implements AuthBase {
                 idToken: googleAuth.idToken,
                 accessToken: googleAuth.accessToken));
         return userCredential.user;
-      }
-      else {
+      } else {
         throw FirebaseAuthException(
           code: 'ERROR_MISSING_GOOGLE_ID_TOKEN',
           message: 'Missing Google ID token',
         );
-    }  }
-      else {
+      }
+    } else {
       throw FirebaseAuthException(
         code: 'ERROR_ABORTED_BY_USER',
         message: 'Sign in aborted by user',
@@ -58,9 +50,37 @@ class Auth implements AuthBase {
     }
   }
 
+  //Sign In with email
+  @override
+  Future<User?> signInWithEmailAndPassword(
+      String email, String password) async {
+    final userCredential = await _firebaseAuth.signInWithCredential(
+        EmailAuthProvider.credential(email: email, password: password));
+    return userCredential.user;
+  }
+
+  //Register a user with email and password
+  @override
+  Future<User?> createUserWithEmailAndPassword(
+      String email, String password) async {
+    final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email, password: password);
+    return userCredential.user;
+  }
+
+  //Function to sign in Anonymously
+  @override
+  Future<User?> signInAnonymously() async {
+    //Function call to return the user credential
+    final userCredential = await _firebaseAuth.signInAnonymously();
+    //Return the user variable
+    return userCredential.user;
+  }
+
   //Function for signing out
   @override
   Future<void> signOut() async {
+    await GoogleSignIn().signOut();
     await _firebaseAuth.signOut();
   }
 }
