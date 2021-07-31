@@ -1,15 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:time_tracker_final/app/sign_in/validators.dart';
 import 'package:time_tracker_final/common_widgets/form_submit_button.dart';
+import 'package:time_tracker_final/common_widgets/show_alert_dialog.dart';
 import 'package:time_tracker_final/services/auth.dart';
 
 enum EmailSignInFormType { SignIn, Register }
 
 class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidators {
-  final AuthBase auth;
-  EmailSignInForm({required this.auth});
+
   @override
   _EmailSignInFormState createState() => _EmailSignInFormState();
 }
@@ -33,10 +34,11 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       _isLoading = true;
     });
     try {
+      final auth = Provider.of<AuthBase>(context, listen: false);
       if (_formType == EmailSignInFormType.SignIn) {
-        await widget.auth.signInWithEmailAndPassword(_email, _password);
+        await auth.signInWithEmailAndPassword(_email, _password);
       } else {
-        await widget.auth.createUserWithEmailAndPassword(_email, _password);
+        await auth.createUserWithEmailAndPassword(_email, _password);
       }
       Navigator.of(context).pop();
     } catch (e) {
@@ -44,20 +46,10 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       if (Platform.isIOS) {
         print('Add IOS CODE');
       } else {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text('Sign in failed'),
-                content: Text(e.toString()),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text('OK'),
-                  )
-                ],
-              );
-            });
+        showAlertDialog(context,
+            title: 'Sign in failed',
+            content: e.toString(),
+            defaultActionText: 'OK');
       }
     } finally {
       setState(() {
