@@ -20,7 +20,7 @@ class LandingPage extends StatelessWidget {
           final User? user = snapshot.data;
           // If there is no user currently available just send user to signIn page
           if (user == null) {
-            return SignInPage();
+            return SignInPage.create(context);
           }
           // If there is a active user just send it to HomeScreen
           return HomePage();
