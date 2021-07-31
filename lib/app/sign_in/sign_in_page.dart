@@ -1,35 +1,68 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker_final/app/sign_in/email_sign_in_page.dart';
 import 'package:time_tracker_final/app/sign_in/sign_in_button.dart';
 import 'package:time_tracker_final/app/sign_in/social_sign_in_button.dart';
+import 'package:time_tracker_final/common_widgets/show_exception_alert_dialog.dart';
 import 'package:time_tracker_final/services/auth.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
+  @override
+  _SignInPageState createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  bool _isLoading = false;
+
+  void _showSignInError(BuildContext context, Exception exception) {
+    //If user aborted the sign in process don't show any exception
+    if (exception is FirebaseException &&
+        exception.code == 'ERROR_ABORTED_BY_USER') {
+      return;
+    }
+    //else just blast it on the screen
+    showExceptionAlertDialog(context,
+        title: 'Sign in Failed', exception: exception);
+  }
+
   void _anonymousSignIn(BuildContext context) async {
     try {
+      setState(() {
+        _isLoading = true;
+      });
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.signInAnonymously();
-    } catch (e) {
-      print(e.toString());
+    } on FirebaseException catch (e) {
+      _showSignInError(context, e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   void _googleSignIn(BuildContext context) async {
     try {
+      setState(() {
+        _isLoading = true;
+      });
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.signInWithGoogle();
-    } catch (e) {
-      print(e.toString());
+    } on FirebaseException catch (e) {
+      _showSignInError(context, e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   void _emailSignIn(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-          builder: (context) => EmailSignInPage(
-              ),
-          fullscreenDialog: true),
+          builder: (context) => EmailSignInPage(), fullscreenDialog: true),
     );
   }
 
@@ -40,7 +73,11 @@ class SignInPage extends StatelessWidget {
         title: Text('Time Tracker'),
         elevation: 5.0,
       ),
-      body: _buildContainer(context),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : _buildContainer(context),
     );
   }
 
