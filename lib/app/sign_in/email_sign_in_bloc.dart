@@ -19,6 +19,7 @@ class EmailSignInBloc {
 
   void updateEmail(String email) => updateWith(email: email);
   void updatePassword(String password) => updateWith(password: password);
+
   void toggleFormType() {
     final formType = _model.formType == EmailSignInFormType.SignIn
         ? EmailSignInFormType.Register
