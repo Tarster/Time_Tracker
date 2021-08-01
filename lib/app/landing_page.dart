@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:time_tracker_final/app/home_page.dart';
+import 'package:time_tracker_final/app/home/jobs_page.dart';
 import 'package:time_tracker_final/app/sign_in/sign_in_page.dart';
 import 'package:time_tracker_final/services/auth.dart';
+import 'package:time_tracker_final/services/database.dart';
 
 class LandingPage extends StatelessWidget {
 
@@ -23,7 +24,9 @@ class LandingPage extends StatelessWidget {
             return SignInPage.create(context);
           }
           // If there is a active user just send it to HomeScreen
-          return HomePage();
+          return Provider<Database>(
+              create: (_)=> FirestoreDatabase(uid: user.uid),
+              child: JobsPage());
         }
         // If connection is not true just return a container
         else
