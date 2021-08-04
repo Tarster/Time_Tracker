@@ -5,6 +5,7 @@ import 'package:time_tracker_final/services/firestore_service.dart';
 abstract class Database {
   Future<void> setJob(Job job);
   Stream<List<Job?>> jobsStream();
+  Future<void> deleteJob(Job job);
 }
 
 //Method to get current DateTime and convert it to human readable form
@@ -29,4 +30,8 @@ class FirestoreDatabase implements Database {
         path: APIPaTH.job(uid, job.id),
         data: job.toMap(),
       );
+
+  @override
+  Future<void> deleteJob(Job job) =>
+      _service.deleteData(path: APIPaTH.job(uid, job.id));
 }

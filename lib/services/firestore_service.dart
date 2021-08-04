@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreService {
-
   FirestoreService._();
-  static final instance =FirestoreService._();
+  static final instance = FirestoreService._();
 
   Future<void> setData(
       {required String path, required Map<String, dynamic> data}) async {
@@ -17,7 +16,14 @@ class FirestoreService {
   }) {
     final reference = FirebaseFirestore.instance.collection(path);
     final snapshot = reference.snapshots();
-    return snapshot.map((snapshot) =>
-        snapshot.docs.map((snapshot) => builder(snapshot.data(),snapshot.id)).toList());
+    return snapshot.map((snapshot) => snapshot.docs
+        .map((snapshot) => builder(snapshot.data(), snapshot.id))
+        .toList());
+  }
+
+  Future<void> deleteData({required String path}) async {
+    final reference = FirebaseFirestore.instance.doc(path);
+    print('delete: $path');
+    await reference.delete();
   }
 }
