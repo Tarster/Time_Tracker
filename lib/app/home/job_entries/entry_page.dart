@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:time_tracker_final/services/database.dart';
-import 'package:time_tracker_final/app/home/job_entries/date_time_picker.dart';
+import 'package:time_tracker_final/common_widgets/date_time_picker.dart';
 import 'package:time_tracker_final/app/home/job_entries/format.dart';
 import 'package:time_tracker_final/app/home/models/entry.dart';
 import 'package:time_tracker_final/app/home/models/job.dart';
@@ -13,7 +13,7 @@ class EntryPage extends StatefulWidget {
   const EntryPage({
     required this.database,
     required this.job,
-    required this.entry,
+    this.entry,
   });
   final Database database;
   final Job job;
@@ -26,7 +26,7 @@ class EntryPage extends StatefulWidget {
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) =>
-            EntryPage(database: database, job: job, entry: entry!),
+            EntryPage(database: database, job: job, entry: entry),
         fullscreenDialog: true,
       ),
     );
@@ -127,8 +127,8 @@ class _EntryPageState extends State<EntryPage> {
       labelText: 'Start',
       selectedDate: _startDate!,
       selectedTime: _startTime!,
-      selectDate: (date) => setState(() => _startDate = date),
-      selectTime: (time) => setState(() => _startTime = time),
+      onSelectedDate: (date) => setState(() => _startDate = date),
+      onSelectedTime: (time) => setState(() => _startTime = time),
     );
   }
 
@@ -137,8 +137,8 @@ class _EntryPageState extends State<EntryPage> {
       labelText: 'End',
       selectedDate: _endDate!,
       selectedTime: _endTime!,
-      selectDate: (date) => setState(() => _endDate = date),
-      selectTime: (time) => setState(() => _endTime = time),
+      onSelectedDate: (date) => setState(() => _endDate = date),
+      onSelectedTime: (time) => setState(() => _endTime = time),
     );
   }
 
