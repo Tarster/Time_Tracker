@@ -11,7 +11,7 @@ class EditJobPage extends StatefulWidget {
   final Job? job;
   static Future<void> show(BuildContext context,
       {required Database database, Job? job}) async {
-    await Navigator.of(context).push(
+    await Navigator.of(context,rootNavigator: true).push(
       MaterialPageRoute(
         builder: (context) => EditJobPage(
           database: database,
@@ -120,29 +120,30 @@ class _EditJobPageState extends State<EditJobPage> {
 
   Widget _buildForm() {
     return Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            TextFormField(
-              initialValue: _name,
-              validator: (value) =>
-                  value!.isNotEmpty ? null : "Name can't be empty",
-              onSaved: (value) => _name = value,
-              decoration: InputDecoration(labelText: 'Job Name'),
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          TextFormField(
+            initialValue: _name,
+            validator: (value) =>
+                value!.isNotEmpty ? null : "Name can't be empty",
+            onSaved: (value) => _name = value,
+            decoration: InputDecoration(labelText: 'Job Name'),
+          ),
+          TextFormField(
+            initialValue: _ratePerHour == null ? null : '$_ratePerHour',
+            validator: (value) =>
+                value!.isNotEmpty ? null : "Rate per hour can't be empty",
+            onSaved: (value) => _ratePerHour = int.parse(value ?? '0'),
+            decoration: InputDecoration(labelText: 'Rate per hour'),
+            keyboardType: TextInputType.numberWithOptions(
+              signed: false,
+              decimal: false,
             ),
-            TextFormField(
-              initialValue: _ratePerHour == null ? null : '$_ratePerHour',
-              validator: (value) =>
-                  value!.isNotEmpty ? null : "Rate per hour can't be empty",
-              onSaved: (value) => _ratePerHour = int.parse(value ?? '0'),
-              decoration: InputDecoration(labelText: 'Rate per hour'),
-              keyboardType: TextInputType.numberWithOptions(
-                signed: false,
-                decimal: false,
-              ),
-            ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 }
