@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:time_tracker_final/app/home/cupertino_home_scaffold.dart';
+import 'package:time_tracker_final/app/home/jobs/jobs_page.dart';
 import 'package:time_tracker_final/app/home/tab_item.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,15 +12,23 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   TabItem _currentTab = TabItem.jobs;
+  Map<TabItem, WidgetBuilder> get widgetBuilder {
+    return {
+      TabItem.jobs: (_) => JobsPage(),
+      TabItem.entries: (_) => Container(),
+      TabItem.account: (_) => Container(),
+    };
+  }
+
   void _select(TabItem tabItem) {
-  setState(() =>_currentTab = tabItem);
+    setState(() => _currentTab = tabItem);
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoHomeScaffold(
-        currentTab: _currentTab, onSelectTab: _select);
+        widgetBuilder: widgetBuilder,
+        currentTab: _currentTab,
+        onSelectTab: _select);
   }
-
-
 }

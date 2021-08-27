@@ -45,7 +45,8 @@ class JobEntriesPage extends StatelessWidget {
     return StreamBuilder<Job>(
       stream: database.jobStream(jobId: job.id),
       builder: (context, snapshot) {
-        final job = snapshot.data ;
+        final job = snapshot.data;
+
         final jobName = job?.name ?? '';
         return Scaffold(
           appBar: AppBar(
@@ -53,48 +54,60 @@ class JobEntriesPage extends StatelessWidget {
             title: Text(jobName),
             actions: <Widget>[
               TextButton(
-                child: Text(
-                  'Edit',
-                  style: TextStyle(fontSize: 18.0, color: Colors.white),
+                onPressed: () => EntryPage.show(
+                    context: context, database: database, job: job!),
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white70,
                 ),
+              ),
+              TextButton(
+                child: Icon(
+                  Icons.edit,
+                  color: Colors.white70,
+                ),
+                // child: Text(
+                //   'Edit',
+                //   style: TextStyle(fontSize: 18.0, color: Colors.white),
+                // ),
                 onPressed: () =>
                     EditJobPage.show(context, database: database, job: job),
               ),
             ],
           ),
-          body: _buildContent(context, job!),
-          floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.add),
-            onPressed: () =>
-                EntryPage.show(context: context, database: database, job: job),
-          ),
+          body: _buildContent(context, job),
         );
-      }
+      },
     );
   }
 
-  Widget _buildContent(BuildContext context, Job job) {
-    return StreamBuilder<List<Entry>>(
-      stream: database.entriesStream(job: job),
-      builder: (context, snapshot) {
-        return ListItemBuilder<Entry>(
-          snapshot: snapshot,
-          itemBuilder: (context, entry) {
-            return DismissibleEntryListItem(
-              key: Key('entry-${entry.id}'),
-              entry: entry,
-              job: job,
-              onDismissed: () => _deleteEntry(context, entry),
-              onTap: () => EntryPage.show(
-                context: context,
-                database: database,
-                job: job,
+  Widget _buildContent(BuildContext context, Job? job) {
+    if (job != null) {
+      return StreamBuilder<List<Entry>>(
+        stream: database.entriesStream(job: job),
+        builder: (context, snapshot) {
+          return ListItemBuilder<Entry>(
+            snapshot: snapshot,
+            itemBuilder: (context, entry) {
+              return DismissibleEntryListItem(
+                key: Key('entry-${entry.id}'),
                 entry: entry,
-              ),
-            );
-          },
-        );
-      },
+                job: job,
+                onDismissed: () => _deleteEntry(context, entry),
+                onTap: () => EntryPage.show(
+                  context: context,
+                  database: database,
+                  job: job,
+                  entry: entry,
+                ),
+              );
+            },
+          );
+        },
+      );
+    }
+    return Center(
+      child: Text("NO JOBS TO SHOW. PLEASE ADD SOME JOBS"),
     );
   }
 }
