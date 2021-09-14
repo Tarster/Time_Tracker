@@ -4,12 +4,12 @@ class EntriesListTileModel {
   const EntriesListTileModel({
     required this.leadingText,
     required this.trailingText,
-    required this.middleText,
+    this.middleText,
     this.isHeader = false,
   });
   final String leadingText;
   final String trailingText;
-  final String middleText;
+  final String? middleText;
   final bool isHeader;
 }
 
@@ -27,11 +27,12 @@ class EntriesListTile extends StatelessWidget {
         children: <Widget>[
           Text(model.leadingText, style: TextStyle(fontSize: fontSize)),
           Expanded(child: Container()),
-          Text(
-            model.middleText,
-            style: TextStyle(color: Colors.green[700], fontSize: fontSize),
-            textAlign: TextAlign.right,
-          ),
+          if (model.middleText != null)
+            Text(
+              model.middleText!,
+              style: TextStyle(color: Colors.green[700], fontSize: fontSize),
+              textAlign: TextAlign.right,
+            ),
           SizedBox(
             width: 60.0,
             child: Text(

@@ -14,10 +14,7 @@ class JobDetails {
 
 /// Groups together all jobs/entries on a given day
 class DailyJobsDetails {
-  DailyJobsDetails({
-    required this.date,
-    required this.jobsDetails,
-  });
+  DailyJobsDetails({required this.date, required this.jobsDetails});
   final DateTime date;
   final List<JobDetails> jobsDetails;
 
@@ -49,8 +46,8 @@ class DailyJobsDetails {
     final byDate = _entriesByDate(entries);
     List<DailyJobsDetails> list = [];
     for (var date in byDate.keys) {
-      final entriesByDate = byDate[date];
-      final byJob = _jobsDetails(entriesByDate!);
+      final entriesByDate = byDate[date]!;
+      final byJob = _jobsDetails(entriesByDate);
       list.add(DailyJobsDetails(date: date, jobsDetails: byJob));
     }
     return list.toList();
@@ -58,12 +55,12 @@ class DailyJobsDetails {
 
   /// groups entries by job
   static List<JobDetails> _jobsDetails(List<EntryJob> entries) {
-    Map<String, JobDetails> jobDuration = {};
+    Map<String?, JobDetails> jobDuration = {};
     for (var entryJob in entries) {
       final entry = entryJob.entry;
       final pay = entry.durationInHours * entryJob.job.ratePerHour;
       if (jobDuration[entry.jobId] == null) {
-        jobDuration[entry.jobId!] = JobDetails(
+        jobDuration[entry.jobId] = JobDetails(
           name: entryJob.job.name,
           durationInHours: entry.durationInHours,
           pay: pay,

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:rxdart/rxdart.dart';
 import 'package:time_tracker_final/app/home/entries/daily_jobs_details.dart';
 import 'package:time_tracker_final/app/home/entries/entries_list_tile.dart';
@@ -14,7 +15,7 @@ class EntriesBloc {
 
   /// combine List<Job>, List<Entry> into List<EntryJob>
   Stream<List<EntryJob>> get _allEntriesStream => Rx.combineLatest2(
-        database.entriesStream()!,
+        database.entriesStream(),
         database.jobsStream(),
         _entriesJobsCombiner,
       );
@@ -22,11 +23,10 @@ class EntriesBloc {
   static List<EntryJob> _entriesJobsCombiner(
       List<Entry> entries, List<Job> jobs) {
     return entries.map((entry) {
-      final job = jobs.firstWhere(
+      final job = jobs.firstWhereOrNull(
         (job) => job.id == entry.jobId,
-        orElse: () => null,
       );
-      return EntryJob(entry, job);
+      return EntryJob(entry, job!);
     }).toList();
   }
 
